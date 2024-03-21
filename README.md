@@ -111,7 +111,7 @@ Alterar o arquivo contido em  **documentacao/equipe.txt** para incluir os RMs e 
 
 
 
-## 3. **(6 Ponto)**  A perfeita criação dos Seguintes Resources no pacote resources
+## 3. **(6 Ponto)**  A perfeita criação dos Seguintes Resources no pacote resource
 
 
     1. **(1 Ponto)** **PessoaResource** com as seguintes ROTAS e VERBOS:
