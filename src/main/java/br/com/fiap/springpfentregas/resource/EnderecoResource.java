@@ -7,9 +7,12 @@ import br.com.fiap.springpfentregas.repository.EnderecoRepository;
 import br.com.fiap.springpfentregas.repository.PessoaRepository;
 import br.com.fiap.springpfentregas.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,25 +36,33 @@ public class EnderecoResource {
 
     @Transactional
     @PostMapping
-    public Endereco save(@RequestBody Endereco endereco) {
-
-        if (Objects.isNull( endereco )) return null;
-
-
-        if(Objects.nonNull( endereco.getPessoa().getId() )){
-            Optional<Pessoa> pessoa = pessoaRepository.findById( endereco.getPessoa().getId() );
-            if(pessoa.isPresent()) endereco.setPessoa( pessoa.get() );
+    public ResponseEntity<Endereco> save(@RequestBody Endereco endereco) {
+        if (Objects.isNull(endereco)) return ResponseEntity.badRequest().build();
+        if (Objects.nonNull(endereco.getPessoa().getId())) {
+            Optional<Pessoa> pessoa = pessoaRepository.findById(endereco.getPessoa().getId());
+            if (pessoa.isPresent()) endereco.setPessoa(pessoa.get());
         }
+        endereco.setId(null);
+        Endereco save = repo.save(endereco);
 
-        endereco.setId( null );
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .replacePath("/{id}")
+                .buildAndExpand(save.getId())
+                .toUri();
 
-        return repo.save( endereco );
-
+        return   ResponseEntity.created(uri).body(save);
     }
 
-/**
- * "logalhost/endereco/cep/{cep}" - GET
- * "logalhost/endereco/pessoa/{idPessoa}" - GET
- */
+    @GetMapping(value = "/cep/{cep}")
+    public List<Endereco> findByCep(@PathVariable String cep) {
+        return repo.findByCep(cep);
+    }
+
+    @GetMapping(value = "/pessoa/{idPessoa}")
+    public List<Endereco> findByPessoaId(@PathVariable Long idPessoa) {
+        return repo.findByPessoaId(idPessoa);
+    }
+
 
 }
