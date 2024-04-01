@@ -4,45 +4,38 @@ import br.com.fiap.springpfentregas.dto.request.ProdutoRequest;
 import br.com.fiap.springpfentregas.dto.response.ProdutoResponse;
 import br.com.fiap.springpfentregas.entity.Produto;
 import br.com.fiap.springpfentregas.repository.ProdutoRepository;
+import br.com.fiap.springpfentregas.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/produto")
 public class ProdutoResource {
 
     @Autowired
-    private ProdutoRepository repo;
+    private ProdutoService service;
 
     @GetMapping
     public List<ProdutoResponse> findAll() {
-        return repo.findAll();
+        return service.findAll().stream().map(service::toResponse).toList();
     }
 
 
     @GetMapping(value = "/{id}")
     public ProdutoResponse findById(@PathVariable Long id) {
-        return repo.findById( id ).orElse( null );
+        Produto produto = service.findById(id);
+        return service.toResponse(produto);
     }
 
 
     @Transactional
     @PostMapping
     public ProdutoResponse save(@RequestBody ProdutoRequest produto) {
-
-        if (Objects.isNull( produto )) return null;
-
-        produto.setId( null );
-
-        produto.setEtiqueta( UUID.randomUUID().toString() );
-
-        return repo.save( produto );
-
+        Produto save = service.save(service.toEntity(produto));
+        return service.toResponse(save);
     }
 
 
