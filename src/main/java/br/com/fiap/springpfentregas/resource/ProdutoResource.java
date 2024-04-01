@@ -1,5 +1,7 @@
 package br.com.fiap.springpfentregas.resource;
 
+import br.com.fiap.springpfentregas.dto.request.ProdutoRequest;
+import br.com.fiap.springpfentregas.dto.response.ProdutoResponse;
 import br.com.fiap.springpfentregas.entity.Produto;
 import br.com.fiap.springpfentregas.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +20,20 @@ public class ProdutoResource {
     private ProdutoRepository repo;
 
     @GetMapping
-    public List<Produto> findAll() {
+    public List<ProdutoResponse> findAll() {
         return repo.findAll();
     }
 
 
     @GetMapping(value = "/{id}")
-    public Produto findById(@PathVariable Long id) {
+    public ProdutoResponse findById(@PathVariable Long id) {
         return repo.findById( id ).orElse( null );
     }
 
 
     @Transactional
     @PostMapping
-    public Produto save(@RequestBody Produto produto) {
+    public ProdutoResponse save(@RequestBody ProdutoRequest produto) {
 
         if (Objects.isNull( produto )) return null;
 
