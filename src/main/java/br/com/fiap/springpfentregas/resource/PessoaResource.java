@@ -1,7 +1,8 @@
 package br.com.fiap.springpfentregas.resource;
 
-import br.com.fiap.springpfentregas.entity.Pessoa;
-import br.com.fiap.springpfentregas.repository.PessoaRepository;
+import br.com.fiap.springpfentregas.dto.request.PessoaRequest;
+import br.com.fiap.springpfentregas.dto.response.PessoaResponse;
+import br.com.fiap.springpfentregas.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -14,30 +15,25 @@ import java.util.Objects;
 public class PessoaResource {
 
     @Autowired
-    private PessoaRepository repo;
+    private PessoaService service;
 
     @GetMapping
-    public List<Pessoa> findAll() {
-        return repo.findAll();
+    public List<PessoaResponse> findAll() {
+        return service.findAll().stream().map( service::toResponse ).toList();
     }
-
 
     @GetMapping(value = "/{id}")
-    public Pessoa findById(@PathVariable Long id) {
-        return repo.findById( id ).orElse( null );
+    public PessoaResponse findById(@PathVariable Long id) {
+        return service.toResponse( service.findById( id ) );
     }
-
 
     @Transactional
     @PostMapping
-    public Pessoa save(@RequestBody Pessoa pessoa) {
-
+    public PessoaResponse save(@RequestBody PessoaRequest pessoa) {
         if (Objects.isNull( pessoa )) return null;
-
-        pessoa.setId( null );
-
-        return repo.save( pessoa );
-
+        var entity = service.toEntity( pessoa );
+        var saved = service.save( entity );
+        return service.toResponse( saved );
     }
 
 

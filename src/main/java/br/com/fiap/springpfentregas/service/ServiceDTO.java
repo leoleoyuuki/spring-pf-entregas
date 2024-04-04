@@ -12,7 +12,7 @@ public interface ServiceDTO<Entity, Request, Response> {
 
     /**
      * Este método converte um DTO de requisição para uma
-     * Entidade pronta para ser persistida no banco
+     * Entidade pronta para ser persistida pela primeira vez no Banco de dados
      *
      * @param request um DTO de Request
      * @return é a Entidade pronta para ser salva pela primeira vez no Banco de dados
