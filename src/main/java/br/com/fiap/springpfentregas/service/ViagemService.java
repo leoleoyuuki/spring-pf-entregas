@@ -77,7 +77,6 @@ public class ViagemService implements ServiceDTO<Viagem, ViagemRequest, ViagemRe
                 .saida( request.saida() )
                 .chegada( request.chegada() )
                 .build();
-
     }
 
     @Override
