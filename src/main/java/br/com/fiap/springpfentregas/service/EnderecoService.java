@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -42,21 +41,26 @@ public class EnderecoService implements ServiceDTO<Endereco, EnderecoRequest, En
 
     @Override
     public EnderecoResponse toResponse(Endereco endereco) {
-        return null;
+        return EnderecoResponse.builder()
+                .cep( endereco.getCep() )
+                .numero( endereco.getNumero() )
+                .complemento( endereco.getComplemento() )
+                .pessoa( pessoaService.toResponse( endereco.getPessoa() ) )
+                .build();
     }
 
     @Override
     public Collection<Endereco> findAll() {
-        return List.of();
+        return repo.findAll();
     }
 
     @Override
     public Endereco findById(Long id) {
-        return null;
+        return repo.findById( id ).orElse( null );
     }
 
     @Override
     public Endereco save(Endereco endereco) {
-        return null;
+        return repo.save( endereco );
     }
 }
